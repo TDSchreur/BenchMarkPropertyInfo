@@ -21,28 +21,28 @@ namespace BenchMark
     [SimpleJob(RuntimeMoniker.Net60)]
     public class DictionaryTest
     {
-        private static readonly Dictionary<Type, IEnumerable<PropertyInfo>> StringPropertiesDictionary = new();
+        private static readonly Dictionary<Type, List<PropertyInfo>> StringPropertiesDictionary = new();
 
         [Benchmark]
-        public IEnumerable<PropertyInfo> NoDictionary()
+        public List<PropertyInfo> NoDictionary()
         {
             return typeof(Entity).GetProperties().Where(x => x.PropertyType == typeof(string)).ToList();
         }
 
         [Benchmark]
-        public IEnumerable<PropertyInfo> WithDictionary()
+        public List<PropertyInfo> WithDictionary()
         {
             return GetStringProperties(typeof(Entity));
         }
 
-        private static IEnumerable<PropertyInfo> GetStringProperties(Type entityType)
+        private static List<PropertyInfo> GetStringProperties(Type entityType)
         {
             if (StringPropertiesDictionary.ContainsKey(entityType))
             {
                 return StringPropertiesDictionary[entityType];
             }
 
-            IEnumerable<PropertyInfo> stringProperties = entityType.GetProperties().Where(x => x.PropertyType == typeof(string)).ToList();
+            var stringProperties = entityType.GetProperties().Where(x => x.PropertyType == typeof(string)).ToList();
 
             StringPropertiesDictionary.Add(entityType, stringProperties);
 
